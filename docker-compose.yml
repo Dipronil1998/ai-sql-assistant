@@ -1,0 +1,76 @@
+version: "3.9"
+
+services:
+
+  mysql:
+    image: mysql:8.4
+    container_name: ai_mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ai_sql
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai_redis
+
+    restart: always
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ai_phpmyadmin
+    restart: always
+
+    ports:
+      - "8080:80"
+
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+
+    depends_on:
+      - mysql
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: ai_backend
+
+    restart: always
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - mysql
+      - redis
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+    env_file:
+      - ./backend/.env
+
+volumes:
+
+  mysql_data:
+
+  redis_data:
