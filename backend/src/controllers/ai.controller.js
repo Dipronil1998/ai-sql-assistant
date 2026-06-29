@@ -1,3 +1,4 @@
+const cache = require("../services/cache.service");
 const { generateSQL } = require("../services/ai.service");
 const { executeQuery } = require("../services/sql.service");
 const validateSQL = require("../utils/sqlValidator");
@@ -13,9 +14,17 @@ const generateQuery = async (req, res) => {
             });
         }
 
-         // Step 1: Generate SQL
-        const sql = await generateSQL(question);
+        const sqlCacheKey = `sql:${question.trim().toLowerCase()}`;
 
+        // Step 1: Generate SQL
+
+        let sql = await cache.get(sqlCacheKey);
+
+        if (!sql) {
+            sql = await generateSQL(question);
+            await cache.set(sqlCacheKey, sql, 3600);
+        }
+        console.log(`Generated SQL: ${sql}`);
         // Step 2: Validate SQL
         validateSQL(sql);
 

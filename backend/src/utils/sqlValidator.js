@@ -11,7 +11,7 @@ const validateSQL = (sql) => {
         "CREATE",
         "REPLACE",
         "GRANT",
-        "REVOKE"
+        "REVOKE",
     ];
 
     if (!upper.startsWith("SELECT")) {
@@ -19,7 +19,9 @@ const validateSQL = (sql) => {
     }
 
     for (const keyword of forbidden) {
-        if (upper.includes(keyword)) {
+        const regex = new RegExp(`\\b${keyword}\\b`);
+
+        if (regex.test(upper)) {
             throw new Error(`Forbidden keyword: ${keyword}`);
         }
     }
