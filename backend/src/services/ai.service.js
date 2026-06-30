@@ -1,6 +1,5 @@
 const openai = require("../../config/openai");
 const getSystemPrompt = require("../prompts/system.prompt");
-const SYSTEM_PROMPT = require("../prompts/system.prompt");
 const loadSchema = require("./redis.service");
 
 const generateSQL = async (question) => {
@@ -8,8 +7,6 @@ const generateSQL = async (question) => {
         const schema = await loadSchema();
 
         const systemPrompt = getSystemPrompt(schema);
-
-        console.log(systemPrompt); 
 
 
         const response = await openai.responses.create({
