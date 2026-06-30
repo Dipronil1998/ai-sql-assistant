@@ -91,6 +91,15 @@ services:
     depends_on:
       - backend
 
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redis_insight
+    restart: always
+    ports:
+      - "5540:5540" 
+    depends_on:
+      - redis
+
 volumes:
 
   mysql_data:

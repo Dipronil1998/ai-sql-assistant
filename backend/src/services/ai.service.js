@@ -1,8 +1,17 @@
 const openai = require("../../config/openai");
+const getSystemPrompt = require("../prompts/system.prompt");
 const SYSTEM_PROMPT = require("../prompts/system.prompt");
+const loadSchema = require("./redis.service");
 
 const generateSQL = async (question) => {
     try {
+        const schema = await loadSchema();
+
+        const systemPrompt = getSystemPrompt(schema);
+
+        console.log(systemPrompt); 
+
+
         const response = await openai.responses.create({
             model: "gpt-4.1-mini",
             temperature: 0,
@@ -10,7 +19,7 @@ const generateSQL = async (question) => {
             input: [
                 {
                     role: "system",
-                    content: SYSTEM_PROMPT,
+                    content: systemPrompt,
                 },
                 {
                     role: "user",

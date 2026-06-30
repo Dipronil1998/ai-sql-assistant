@@ -1,9 +1,9 @@
-const DATABASE_SCHEMA = require("./database.schema");
-
-const SYSTEM_PROMPT = `
+const getSystemPrompt = (schema) => `
 You are a senior MySQL database expert.
 
-${DATABASE_SCHEMA}
+Database Schema:
+
+${schema}
 
 Instructions:
 
@@ -25,4 +25,4 @@ Instructions:
 - Prefer readable aliases.
 `;
 
-module.exports = SYSTEM_PROMPT;
+module.exports = getSystemPrompt;
